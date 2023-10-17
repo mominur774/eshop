@@ -1,0 +1,32 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="fashion_section">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <form action="" method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+                
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.name }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-secondary w-100 my-3">LOGIN</button>
+                <span class="d-block">Don't have an account? <a href="{% url "register" %}">Register</a></span>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

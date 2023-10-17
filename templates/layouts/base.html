@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+   <head>
+      {% include "includes/head.html" %}
+      {% block extrastyle %}{% endblock extrastyle %}
+   </head>
+   <body>
+
+      {% block banner %}
+         {% include "includes/banner.html" %}
+      {% endblock banner %}
+
+      {% block content %}{% endblock content %}
+
+      {% block footer %}
+         {% include "includes/footer.html" %}
+      {% endblock footer %}
+
+      {% block copyright %}
+         {% include "includes/copyright.html" %}
+      {% endblock copyright %}
+
+      {% include "includes/scripts.html" %}
+      {% block extra_js %}{% endblock extra_js %}
+
+   </body>
+</html>

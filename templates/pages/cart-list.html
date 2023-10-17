@@ -1,0 +1,88 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="row my-5">
+    <div class="col-md-8 mx-auto">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product Name</th>
+                        <th>Product Image</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cart in carts %}
+                    <tr>
+                        <td>#{{ cart.id }}</td>
+                        <td>{{ cart.product.name }}</td>
+                        <td>
+                            <img width="40px" src="{{ cart.product.image.url }}" alt="">
+                        </td>
+                        <td>
+                            <form action="{% url "cart_quantity" cart.id %}" method="post">
+                                {% csrf_token %}
+
+                                <div class="mb-3 d-flex">
+                                    <button type="submit" class="decrease px-2">-</button>
+                                    <input style="width: 30px;" name="quantity" type="text" value="{{ cart.quantity }}" class="quantity text-center border-0" />
+                                    <button type="submit" class="increase px-2">+</button>
+                                </div>
+                            </form>
+                        </td>
+                        <td>${{ cart.product.price }}</td>
+                        <td>${{ cart.total_price }}</td>
+                        <td>
+                            <form action="{% url "delete_cart_item" cart.id %}" method="post">
+                                {% csrf_token %}
+                                <button class="bg-transparent" type="submit">
+                                    <i class="fa fa-trash text-danger"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+
+<script>
+    // Get all the increase and decrease buttons and the quantity inputs
+    const increaseButtons = document.querySelectorAll('.increase');
+    const decreaseButtons = document.querySelectorAll('.decrease');
+    const quantityInputs = document.querySelectorAll('.quantity');
+    
+    // Add click event listeners to all the buttons
+    increaseButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            let currentQuantity = parseInt(quantityInputs[index].value);
+            quantityInputs[index].value = currentQuantity + 1;
+        });
+    });
+    
+    decreaseButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            let currentQuantity = parseInt(quantityInputs[index].value);
+            // Ensure quantity doesn't go below 1
+            if (currentQuantity > 1) {
+                quantityInputs[index].value = currentQuantity - 1;
+            }
+        });
+    });
+</script>
+
+
+{% endblock extra_js %}

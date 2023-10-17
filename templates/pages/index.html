@@ -1,0 +1,47 @@
+{% extends "layouts/base.html" %}
+{% load static product_list %}
+
+{% block content %}
+
+   {% for category in categories %}
+   <div class="fashion_section">
+      <div id="main_slider" class="carousel slide" data-ride="carousel">
+         <div class="carousel-inner">
+            <div class="carousel-item active">
+               <div class="container">
+                  <h1 class="fashion_taital">{{ category.display_name }}</h1>
+                  <div class="fashion_section_2">
+                     {% if request|category_wise_product:category.id %}
+                     <div class="row">
+                        {% for product in request|category_wise_product:category.id %}
+                        <div class="col-lg-4 col-sm-4">
+                           <div class="box_main">
+                              <h4 class="shirt_text">{{ product.name }}</h4>
+                              <p class="price_text">Price  <span style="color: #262626;">$ {{ product.price }}</span></p>
+                              <div class="tshirt_img">
+                                 <img src="{{ product.image.url }}">
+                              </div>
+                              <div class="btn_main">
+                                 <div class="buy_bt"><a href="{% url "product_details" product.slug %}">Buy Now</a></div>
+                                 <div class="seemore_bt"><a href="#">See More</a></div>
+                              </div>
+                           </div>
+                        </div>
+                        {% endfor %}
+                     </div>
+                     {% else %}
+                     <span class="text-center d-block mb-5">No product found for this category</span>
+                     {% endif %}
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="d-flex justify-content-center">
+            <a href="{% url "category_product" category.slug %}" class="btn btn-secondary py-2 px-3">Show more</a>
+         </div>
+      </div>
+   </div>
+   {% endfor %}
+
+{% endblock content %}
+
