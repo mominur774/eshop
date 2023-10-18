@@ -4,24 +4,38 @@
 {% block content %}
 
 <div class="row my-5">
-    <div class="col-md-8 mx-auto">
+    <form method="post" class="col-md-8 mx-auto">
+        {% csrf_token %}
+
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="">
+                                <label class="form-check-label" for=""></label>
+                            </div>
+                        </th>
+                        <th>Product Code</th>
                         <th>Product Name</th>
                         <th>Product Image</th>
                         <th>Quantity</th>
+                        <th>Action</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for cart in carts %}
                     <tr>
-                        <td>#{{ cart.id }}</td>
+                        <td>
+                            <div class="form-check">
+                                <input class="form-check-input" name="cart_item" type="checkbox" value="{{ cart.id }}" checked>
+                                <label class="form-check-label" for=""></label>
+                            </div>
+                        </td>
+                        <td>#{{ cart.product.id }}</td>
                         <td>{{ cart.product.name }}</td>
                         <td>
                             <img width="40px" src="{{ cart.product.image.url }}" alt="">
@@ -37,8 +51,6 @@
                                 </div>
                             </form>
                         </td>
-                        <td>${{ cart.product.price }}</td>
-                        <td>${{ cart.total_price }}</td>
                         <td>
                             <form action="{% url "delete_cart_item" cart.id %}" method="post">
                                 {% csrf_token %}
@@ -47,12 +59,28 @@
                                 </button>
                             </form>
                         </td>
+                        <td>${{ cart.product.price }}</td>
+                        <td>${{ cart.total_price }}</td>
+
                     </tr>
                     {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><b>Total:</b></td>
+                        <td>${{ cart_total_price }}</td>
+                    </tr>
                 </tbody>
             </table>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-secondary mr-4">Proceed to Checkout</button>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 
 {% endblock content %}
