@@ -44,3 +44,23 @@ class Cart(BaseModel):
 
     def __str__(self):
         return f"{self.user.username}'s cart"
+
+
+class BillingDetails(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    address = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    postal_code = models.CharField(max_length=20)
+    phone_number = models.CharField(max_length=15)
+
+    def __str__(self):
+        return f"{self.user}'s billing"
+
+class Order(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    billing = models.ForeignKey(BillingDetails, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user}'s order"
+

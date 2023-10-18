@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from product.models import Product, Category, Cart
 from django.views.generic import ListView, DetailView
+from django.db.models import F, ExpressionWrapper, fields, Sum
 
 # Create your views here.
 
@@ -31,7 +32,22 @@ class CartListView(ListView):
     context_object_name = 'carts'
 
     def get_queryset(self):
-        return Cart.objects.filter(user=self.request.user)
+        return Cart.objects.filter(
+            user=self.request.user
+        )
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        carts = Cart.objects.filter(
+            user=self.request.user
+        )
+        cart_total_price = 0
+        for cart in carts:
+            cart_total_price += cart.total_price
+
+        context['cart_total_price'] = cart_total_price
+
+        return context
 
 
 def modify_cart_quantity(request, cart_id):
