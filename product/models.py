@@ -2,6 +2,7 @@ from django.db import models
 from common.models import BaseModel
 from autoslug import AutoSlugField
 from accounts.models import User
+from enum_helper import StatusChoices, PaymentMethodChoices
 
 # Create your models here.
 
@@ -36,6 +37,7 @@ class Cart(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    purchased = models.BooleanField(default=False)
 
     @property
     def total_price(self):
@@ -57,10 +59,17 @@ class BillingDetails(BaseModel):
         return f"{self.user}'s billing"
 
 class Order(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    carts = models.ManyToManyField(Cart)
     billing = models.ForeignKey(BillingDetails, on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=50, 
+        choices=StatusChoices.choices, 
+        default=StatusChoices.PENDING
+    )
+    payment_method = models.CharField(
+        max_length=100,
+        choices=PaymentMethodChoices.choices,
+        default=PaymentMethodChoices.CASH
+    )
 
-    def __str__(self):
-        return f"{self.user}'s order"
 

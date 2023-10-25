@@ -1,0 +1,68 @@
+{% extends "layouts/base.html" %}
+{% load static cart_count %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+
+        <form method="post" class="row p-5">
+            {% csrf_token %}
+            <div class="col-lg-6 px-5">
+
+                {% if billing_details %}
+                    {% for billing in billing_details %}
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="billing" id="billing{{billing.id}}" value="{{ billing.id }}" required >
+                            <label class="form-check-label" for="billing{{billing.id}}">
+                                {{ billing.address }}, {{ billing.city }} - {{ billing.postal_code }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <a href="{% url "create_billing" %}">Add new billing address</a>
+                
+                <hr>
+                <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Autem, possimus voluptatum corrupti est iste consectetur? Ipsa nostrum temporibus debitis quis, possimus iure aperiam tenetur aliquid dolorum veniam maiores sint quasi?</span>
+            </div>
+
+            <div class="col-lg-6 px-5">
+                {% for cart in carts %}
+                    <div class="d-flex mb-4">
+                        <img width="40px" src="{{ cart.product.image.url }}" alt="">
+                        <div class="ml-3">
+                            <span class="d-block">{{ cart.product.name }}</span>
+                            <span class="d-block">{{ cart.quantity }} x ${{ cart.product.price }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex">
+                    <h4>Total to pay: <b>${{ carts|total_cart_price }}</b></h4>
+                    <span class="d-block ml-2"><i>(VAT included)</i></span>
+                </div>
+                <hr>
+                <h3>Payment method</h3>
+                <div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_method" id="cash" value="CASH" required>
+                        <label class="form-check-label" for="cash">
+                          Cash on Delivery
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_method" id="stripe" value="STRIPE" required>
+                        <label class="form-check-label" for="stripe">
+                          Pay with strip
+                        </label>
+                    </div>
+                </div>
+                <button class="btn btn-secondary mt-3" type="submit">Place order</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+{% endblock content %}
