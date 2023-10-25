@@ -1,10 +1,10 @@
 {% extends "layouts/base.html" %}
-{% load static %}
+{% load static cart_count %}
 
 {% block content %}
 
 <div class="row my-5">
-    <form method="post" class="col-md-8 mx-auto">
+    <form method="post" action="{% url "checkout" %}" class="col-md-8 mx-auto">
         {% csrf_token %}
 
         <div class="table-responsive">
@@ -41,23 +41,20 @@
                             <img width="40px" src="{{ cart.product.image.url }}" alt="">
                         </td>
                         <td>
-                            <form action="{% url "cart_quantity" cart.id %}" method="post">
-                                {% csrf_token %}
-
+                            <div>
                                 <div class="mb-3 d-flex">
-                                    <button type="submit" class="decrease px-2">-</button>
-                                    <input style="width: 30px;" name="quantity" type="text" value="{{ cart.quantity }}" class="quantity text-center border-0" />
-                                    <button type="submit" class="increase px-2">+</button>
+                                    <a href="{% url "decrement_cart" cart.id %}" class="decrease px-2">-</a>
+                                    <input style="width: 30px;" readonly type="text" value="{{ cart.quantity }}" class="quantity text-center border-0" />
+                                    <a href="{% url "increment_cart" cart.id %}" class="increase px-2">+</a>
                                 </div>
-                            </form>
+                            </div>
                         </td>
                         <td>
-                            <form action="{% url "delete_cart_item" cart.id %}" method="post">
-                                {% csrf_token %}
-                                <button class="bg-transparent" type="submit">
+                            <div>
+                                <a href="{% url "delete_cart_item" cart.id %}">
                                     <i class="fa fa-trash text-danger"></i>
-                                </button>
-                            </form>
+                                </a>
+                            </div>
                         </td>
                         <td>${{ cart.product.price }}</td>
                         <td>${{ cart.total_price }}</td>
@@ -72,12 +69,12 @@
                         <td></td>
                         <td></td>
                         <td><b>Total:</b></td>
-                        <td>${{ cart_total_price }}</td>
+                        <td>${{ carts|total_cart_price }}</td>
                     </tr>
                 </tbody>
             </table>
             <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-secondary mr-4">Proceed to Checkout</button>
+                <button type="submit" class="btn btn-secondary mr-4">Checkout</button>
             </div>
         </div>
     </form>
